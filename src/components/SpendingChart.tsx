@@ -1,9 +1,27 @@
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import dayjs from 'dayjs';
 
+// Register chart components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 interface Transaction {
   amount: number | string;
-  type: 'income' | 'expense' | string;
   occurred_at: string;
 }
 
@@ -12,14 +30,18 @@ interface SpendingChartProps {
 }
 
 export default function SpendingChart({ transactions }: SpendingChartProps) {
-  // Aggregate expenses and incomes by month
   const dataByMonth: Record<string, { income: number; expense: number }> = {};
 
   transactions.forEach(tx => {
     const month = dayjs(tx.occurred_at).format('YYYY-MM');
     if (!dataByMonth[month]) dataByMonth[month] = { income: 0, expense: 0 };
-    if (tx.type === 'income' || tx.type === 'expense') {
-      dataByMonth[month][tx.type] += typeof tx.amount === 'string' ? parseFloat(tx.amount) : tx.amount;
+
+    const amt = typeof tx.amount === 'string' ? parseFloat(tx.amount) : tx.amount;
+
+    if (amt >= 0) {
+      dataByMonth[month].income += amt;
+    } else {
+      dataByMonth[month].expense += Math.abs(amt);
     }
   });
 

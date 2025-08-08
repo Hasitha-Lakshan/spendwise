@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import AddTransaction from './AddTransaction';
 import TransactionList from './TransactionList';
+import SpendingChart from './SpendingChart';  // <-- import SpendingChart
 
 interface User {
   id: string;
@@ -58,12 +59,21 @@ export default function Dashboard({ user }: DashboardProps) {
     }
   }
 
+  // Map transactions for SpendingChart with occurred_at field
+  const mappedTransactions = transactions.map(tx => ({
+    ...tx,
+    occurred_at: tx.transaction_date,
+  }));
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
-      {/* <h1 className="text-3xl font-bold text-gray-800 text-center">SpendWise Dashboard</h1> */}
-
       <section className="bg-white p-6 rounded-md shadow-md">
         <AddTransaction user={user} onAdded={fetchTransactions} />
+      </section>
+
+      <section className="bg-white p-6 rounded-md shadow-md">
+        {/* Pass mappedTransactions to SpendingChart */}
+        <SpendingChart transactions={mappedTransactions} />
       </section>
 
       <section className="bg-white p-6 rounded-md shadow-md">
