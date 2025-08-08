@@ -103,104 +103,136 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-lg mx-auto p-6 bg-white rounded-md shadow-md space-y-6"
+      className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-lg space-y-8"
+      noValidate
     >
-      <div>
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-          Category <span className="text-red-500">*</span>
-        </label>
-        <select
-          id="category"
-          className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm
-            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
-          value={categoryId}
-          onChange={e => setCategoryId(e.target.value)}
-          required
+      <h2 className="text-2xl font-semibold text-gray-900 text-center">Add New Transaction</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Category */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="category"
+            className="mb-2 text-sm font-medium text-gray-700"
+          >
+            Category <span className="text-red-600">*</span>
+          </label>
+          <select
+            id="category"
+            value={categoryId}
+            onChange={e => setCategoryId(e.target.value)}
+            required
+            className="h-12 rounded-md border border-gray-300 bg-white px-4 text-gray-800
+              shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+              transition duration-150 ease-in-out"
+          >
+            <option value="">Select Category</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Sub-Category */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="subCategory"
+            className="mb-2 text-sm font-medium text-gray-700"
+          >
+            Sub-Category <span className="text-red-600">*</span>
+          </label>
+          <select
+            id="subCategory"
+            value={subCategoryId}
+            onChange={e => setSubCategoryId(e.target.value)}
+            required
+            disabled={!categoryId || subCategories.length === 0}
+            className={`h-12 rounded-md border border-gray-300 bg-white px-4 text-gray-800
+              shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+              transition duration-150 ease-in-out
+              ${!categoryId || subCategories.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}
+              `}
+          >
+            <option value="">Select Sub-Category</option>
+            {subCategories.map(sub => (
+              <option key={sub.id} value={sub.id}>
+                {sub.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Date */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="occurredAt"
+            className="mb-2 text-sm font-medium text-gray-700"
+          >
+            Date <span className="text-red-600">*</span>
+          </label>
+          <input
+            id="occurredAt"
+            type="date"
+            value={occurredAt}
+            onChange={e => setOccurredAt(e.target.value)}
+            required
+            className="h-12 rounded-md border border-gray-300 bg-white px-4 text-gray-800
+              shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+              transition duration-150 ease-in-out"
+          />
+        </div>
+
+        {/* Amount */}
+        <div className="flex flex-col">
+          <label
+            htmlFor="amount"
+            className="mb-2 text-sm font-medium text-gray-700"
+          >
+            Amount <span className="text-red-600">*</span>
+          </label>
+          <input
+            id="amount"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={amount}
+            onChange={e => setAmount(e.target.value)}
+            required
+            className="h-12 rounded-md border border-gray-300 bg-white px-4 text-gray-800
+              shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+              transition duration-150 ease-in-out"
+          />
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="flex flex-col">
+        <label
+          htmlFor="description"
+          className="mb-2 text-sm font-medium text-gray-700"
         >
-          <option value="">Select Category</option>
-          {categories.map(cat => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="subCategory" className="block text-sm font-medium text-gray-700 mb-1">
-          Sub-Category <span className="text-red-500">*</span>
-        </label>
-        <select
-          id="subCategory"
-          className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm
-            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 disabled:opacity-50"
-          value={subCategoryId}
-          onChange={e => setSubCategoryId(e.target.value)}
-          required
-          disabled={!categoryId || subCategories.length === 0}
-        >
-          <option value="">Select Sub-Category</option>
-          {subCategories.map(sub => (
-            <option key={sub.id} value={sub.id}>
-              {sub.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="occurredAt" className="block text-sm font-medium text-gray-700 mb-1">
-          Date <span className="text-red-500">*</span>
-        </label>
-        <input
-          id="occurredAt"
-          type="date"
-          className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm
-            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
-          value={occurredAt}
-          onChange={e => setOccurredAt(e.target.value)}
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-          Amount <span className="text-red-500">*</span>
-        </label>
-        <input
-          id="amount"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="Amount"
-          className="block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm
-            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
-          value={amount}
-          onChange={e => setAmount(e.target.value)}
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
           Description
         </label>
         <input
           id="description"
           type="text"
-          placeholder="Description"
-          className="block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm
-            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+          placeholder="Optional details..."
           value={description}
           onChange={e => setDescription(e.target.value)}
+          className="h-12 rounded-md border border-gray-300 bg-white px-4 text-gray-800
+            shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+            transition duration-150 ease-in-out"
         />
       </div>
 
       <button
         type="submit"
-        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md shadow-md
-          hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75
-          transition"
+        className="w-full py-3 text-white font-semibold bg-indigo-600 rounded-md shadow-md
+          hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1
+          transition duration-200"
       >
         Add Transaction
       </button>
