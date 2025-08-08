@@ -23,7 +23,6 @@ interface AddTransactionProps {
 }
 
 export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
-  const [type, setType] = useState<'expense' | 'income' | 'lend' | 'borrow'>('expense');
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [categoryId, setCategoryId] = useState<string>('');
@@ -38,8 +37,10 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
 
   useEffect(() => {
     if (categoryId) fetchSubCategories(categoryId);
-    else setSubCategories([]);
-    setSubCategoryId(''); // reset subcategory selection on category change
+    else {
+      setSubCategories([]);
+      setSubCategoryId('');
+    }
   }, [categoryId]);
 
   async function fetchCategories() {
@@ -73,7 +74,7 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!amount || !categoryId || !occurredAt || !type) {
+    if (!amount || !categoryId || !subCategoryId || !occurredAt) {
       alert('Please fill all required fields');
       return;
     }
@@ -81,9 +82,8 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
     const { error } = await supabase.from('transactions').insert({
       user_id: user.id,
       amount: parseFloat(amount),
-      type,
       category_id: categoryId,
-      sub_category_id: subCategoryId || null,
+      sub_category_id: subCategoryId,
       transaction_date: occurredAt,
       description: description || null,
     });
@@ -96,23 +96,12 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
       setCategoryId('');
       setSubCategoryId('');
       setOccurredAt(new Date().toISOString().slice(0, 10));
-      setType('expense');
       onAdded();
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>
-        Type:
-        <select value={type} onChange={e => setType(e.target.value as typeof type)} required>
-          <option value="expense">Expense</option>
-          <option value="income">Income</option>
-          <option value="lend">Lend</option>
-          <option value="borrow">Borrow</option>
-        </select>
-      </label>
-
       <label>
         Category:
         <select
@@ -134,9 +123,10 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
         <select
           value={subCategoryId}
           onChange={e => setSubCategoryId(e.target.value)}
+          required
           disabled={!categoryId || subCategories.length === 0}
         >
-          <option value="">Select Sub-Category (optional)</option>
+          <option value="">Select Sub-Category</option>
           {subCategories.map(sub => (
             <option key={sub.id} value={sub.id}>
               {sub.name}

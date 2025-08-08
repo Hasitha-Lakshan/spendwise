@@ -11,7 +11,6 @@ interface SubCategory {
 interface Transaction {
   id: string;
   transaction_date: string;
-  type: string;
   category?: Category | null;
   sub_category?: SubCategory | null;
   amount: number;
@@ -30,7 +29,6 @@ export default function TransactionList({ transactions }: TransactionListProps) 
       <thead>
         <tr>
           <th>Date</th>
-          <th>Type</th>
           <th>Category</th>
           <th>Sub-Category</th>
           <th>Amount</th>
@@ -41,7 +39,6 @@ export default function TransactionList({ transactions }: TransactionListProps) 
         {transactions.map(tx => (
           <tr key={tx.id}>
             <td>{new Date(tx.transaction_date).toLocaleDateString()}</td>
-            <td>{tx.type}</td>
             <td>{tx.category?.name ?? 'N/A'}</td>
             <td>{tx.sub_category?.name ?? '-'}</td>
             <td>{tx.amount.toFixed(2)}</td>

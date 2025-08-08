@@ -51,10 +51,9 @@ create table transactions (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   category_id uuid not null references categories(id) on delete set null,
-  sub_category_id uuid references sub_categories(id) on delete set null,
+  sub_category_id uuid not null references sub_categories(id) on delete cascade,
   transaction_date date not null,
   amount numeric(12,2) not null check (amount >= 0),
-  type text not null check (type in ('expense', 'income', 'lend', 'borrow')),
   description text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

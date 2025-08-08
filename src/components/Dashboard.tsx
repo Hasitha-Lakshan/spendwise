@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabaseClient';
 import AddTransaction from './AddTransaction';
 import TransactionList from './TransactionList';
 
-
 interface User {
   id: string;
 }
@@ -22,9 +21,8 @@ interface Transaction {
   id: string;
   user_id: string;
   amount: number;
-  type: string;
   category_id: string;
-  sub_category_id: string | null;
+  sub_category_id: string;
   transaction_date: string;
   description: string | null;
   category?: Category | null;
@@ -43,7 +41,6 @@ export default function Dashboard({ user }: DashboardProps) {
   }, []);
 
   async function fetchTransactions() {
-    // Join categories and sub_categories to transactions
     const { data, error } = await supabase
       .from('transactions')
       .select(`
@@ -66,7 +63,6 @@ export default function Dashboard({ user }: DashboardProps) {
       <h1>SpendWise Dashboard</h1>
       <AddTransaction user={user} onAdded={fetchTransactions} />
       <TransactionList transactions={transactions} />
-      {/* Add analytics charts here later */}
     </div>
   );
 }
