@@ -1,13 +1,19 @@
 interface Category {
-  group_name: string;
+  id: string;
+  name: string;
+}
+
+interface SubCategory {
+  id: string;
   name: string;
 }
 
 interface Transaction {
   id: string;
-  occurred_at: string;
+  transaction_date: string;
   type: string;
   category?: Category | null;
+  sub_category?: SubCategory | null;
   amount: number;
   description?: string | null;
 }
@@ -26,6 +32,7 @@ export default function TransactionList({ transactions }: TransactionListProps) 
           <th>Date</th>
           <th>Type</th>
           <th>Category</th>
+          <th>Sub-Category</th>
           <th>Amount</th>
           <th>Description</th>
         </tr>
@@ -33,11 +40,10 @@ export default function TransactionList({ transactions }: TransactionListProps) 
       <tbody>
         {transactions.map(tx => (
           <tr key={tx.id}>
-            <td>{new Date(tx.occurred_at).toLocaleDateString()}</td>
+            <td>{new Date(tx.transaction_date).toLocaleDateString()}</td>
             <td>{tx.type}</td>
-            <td>
-              {tx.category ? `${tx.category.group_name} - ${tx.category.name}` : 'N/A'}
-            </td>
+            <td>{tx.category?.name ?? 'N/A'}</td>
+            <td>{tx.sub_category?.name ?? '-'}</td>
             <td>{tx.amount.toFixed(2)}</td>
             <td>{tx.description ?? ''}</td>
           </tr>

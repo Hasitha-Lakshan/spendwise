@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import TransactionList from './TransactionList';
 import AddTransaction from './AddTransaction';
+import TransactionList from './TransactionList';
+
 
 interface User {
   id: string;
 }
 
 interface Category {
+  id: string;
   name: string;
-  group_name: string;
+}
+
+interface SubCategory {
+  id: string;
+  name: string;
 }
 
 interface Transaction {
@@ -18,9 +24,11 @@ interface Transaction {
   amount: number;
   type: string;
   category_id: string;
+  sub_category_id: string | null;
+  transaction_date: string;
   description: string | null;
-  occurred_at: string;
-  category?: Category;
+  category?: Category | null;
+  sub_category?: SubCategory | null;
 }
 
 interface DashboardProps {
@@ -35,16 +43,21 @@ export default function Dashboard({ user }: DashboardProps) {
   }, []);
 
   async function fetchTransactions() {
+    // Join categories and sub_categories to transactions
     const { data, error } = await supabase
       .from('transactions')
-      .select(`*, category:categories(name, group_name)`)
+      .select(`
+        *,
+        category:categories(id, name),
+        sub_category:sub_categories(id, name)
+      `)
       .eq('user_id', user.id)
-      .order('occurred_at', { ascending: false });
+      .order('transaction_date', { ascending: false });
 
     if (error) {
-      console.error(error);
+      console.error('Error fetching transactions:', error);
     } else if (data) {
-      setTransactions(data as Transaction[]);
+      setTransactions(data);
     }
   }
 
@@ -53,7 +66,7 @@ export default function Dashboard({ user }: DashboardProps) {
       <h1>SpendWise Dashboard</h1>
       <AddTransaction user={user} onAdded={fetchTransactions} />
       <TransactionList transactions={transactions} />
-      {/* Later add charts and budget summary */}
+      {/* Add analytics charts here later */}
     </div>
   );
 }
