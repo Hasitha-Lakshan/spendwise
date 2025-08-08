@@ -101,10 +101,18 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Category:
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-lg mx-auto p-6 bg-white rounded-md shadow-md space-y-6"
+    >
+      <div>
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+          Category <span className="text-red-500">*</span>
+        </label>
         <select
+          id="category"
+          className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm
+            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
           value={categoryId}
           onChange={e => setCategoryId(e.target.value)}
           required
@@ -116,11 +124,16 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
-      <label>
-        Sub-Category:
+      <div>
+        <label htmlFor="subCategory" className="block text-sm font-medium text-gray-700 mb-1">
+          Sub-Category <span className="text-red-500">*</span>
+        </label>
         <select
+          id="subCategory"
+          className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm
+            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50 disabled:opacity-50"
           value={subCategoryId}
           onChange={e => setSubCategoryId(e.target.value)}
           required
@@ -133,42 +146,64 @@ export default function AddTransaction({ user, onAdded }: AddTransactionProps) {
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
-      <label>
-        Date:
+      <div>
+        <label htmlFor="occurredAt" className="block text-sm font-medium text-gray-700 mb-1">
+          Date <span className="text-red-500">*</span>
+        </label>
         <input
+          id="occurredAt"
           type="date"
+          className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm
+            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
           value={occurredAt}
           onChange={e => setOccurredAt(e.target.value)}
           required
         />
-      </label>
+      </div>
 
-      <label>
-        Amount:
+      <div>
+        <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+          Amount <span className="text-red-500">*</span>
+        </label>
         <input
+          id="amount"
           type="number"
           step="0.01"
           min="0"
           placeholder="Amount"
+          className="block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm
+            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
           value={amount}
           onChange={e => setAmount(e.target.value)}
           required
         />
-      </label>
+      </div>
 
-      <label>
-        Description:
+      <div>
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+          Description
+        </label>
         <input
+          id="description"
           type="text"
           placeholder="Description"
+          className="block w-full rounded-md border border-gray-300 py-2 px-3 shadow-sm
+            focus:border-blue-500 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
           value={description}
           onChange={e => setDescription(e.target.value)}
         />
-      </label>
+      </div>
 
-      <button type="submit">Add Transaction</button>
+      <button
+        type="submit"
+        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md shadow-md
+          hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75
+          transition"
+      >
+        Add Transaction
+      </button>
     </form>
   );
 }

@@ -13,15 +13,11 @@ interface SpendingChartProps {
 
 export default function SpendingChart({ transactions }: SpendingChartProps) {
   // Aggregate expenses and incomes by month
-  const dataByMonth: Record<
-    string,
-    { income: number; expense: number }
-  > = {};
+  const dataByMonth: Record<string, { income: number; expense: number }> = {};
 
   transactions.forEach(tx => {
     const month = dayjs(tx.occurred_at).format('YYYY-MM');
     if (!dataByMonth[month]) dataByMonth[month] = { income: 0, expense: 0 };
-    // Ensure tx.type is either income or expense before adding
     if (tx.type === 'income' || tx.type === 'expense') {
       dataByMonth[month][tx.type] += typeof tx.amount === 'string' ? parseFloat(tx.amount) : tx.amount;
     }
@@ -47,5 +43,9 @@ export default function SpendingChart({ transactions }: SpendingChartProps) {
     ],
   };
 
-  return <Bar data={data} />;
+  return (
+    <div className="max-w-4xl mx-auto p-4 bg-white rounded-md shadow-md">
+      <Bar data={data} />
+    </div>
+  );
 }

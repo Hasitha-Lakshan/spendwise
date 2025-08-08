@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabaseClient';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
+import './App.css'
 
 interface User {
   id: string;
